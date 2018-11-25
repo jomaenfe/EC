@@ -1,0 +1,13 @@
+### Desactivar bomba de Ana María.
+
+Para desactivar esta bomba utilizamos el depurador "gdb" que está incluido en el sistema operativo que utilizamos. Abrimos la bomba con el comando `gdb -tui bomba` y ponemos los layout para que se vea el codigo ensamblador y los registros.
+
+Si examinamos la dirección de memoria que se muestra en el código con la etiqueta de "password", vemos que la contraseña que le a puesto a su programa no está cifrada. Con la orden `p(char *) <direccion_memoria>` sacamos "tacobell". Pero, cuando probamos a introducirla para ver si es la contraseña correcta la bomba explota, por tanto sabemos que realmente tiene un metodo de cifrado. Para sacar el método de cifrado que tiene lo que hago es ayudarme del código asm y de una cadena de texto que introduzco para ver como se queda. En este caso introduzco la cadena "abcdef" y de salida obtengo "'abefg". Por lo que el método de cifrado que tiene es, dividir la palabra en dos partes iguales. A la primera parte le resta un caracter y la segunda parte le suma uno a cada letra. Una vez sabiendo el método de cifrado que tiene es facil descodificar la contraseña. La contraseña que tenemos que introducir para desactivar la bomba es "ubdpadkk". Después de saltarnos la comprobación del tiempo, nos encontramos con el pin. Vemos que hay una instrucción de resta, la instrucción "sub" y que le resta 10111 al registro en el que metemos la contraseña por lo que ya sabemos que hay que sumar ese valor al pin original. Para sacar el pin original solo debemos aplicar la orden `p*(int *) <direccion_memoria>`. Esta orden saca el valor "30119" por lo que para que pase, nosotros debemos introducir "40230".
+
+La bomba original es `bomba`. 
+
+### Cambiando contraseña y pin a la bomba.
+
+Para cambiar la contraseña y el pin lo que he utilizado ha sido el "ghex". Para cambiar la contraseña he buscado en el programa "tacobell" y como no se puede modificar la longitud he cambiado su contraseña original por "modifica", pero para desactivar la bomba nosotros debemos introducir "npejehb`". Para cambiar el pin, lo que he hecho ha sido traducir a hexadecimal el valor del mismo y ponerlo en el formato little-endian. Una vez encontrado lo que he hecho ha sido calcular el nuevo pin, que es "12345", y pasar a hexadecimal little-endian. Para desactivar la bomba debemos introducir como pin el número "22456".
+
+La bomba con las contraseña modificadas es `bomba_mod`. 
